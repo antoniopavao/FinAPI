@@ -17,11 +17,9 @@ statement - []
 app.post("/account", (req, res) => {
   const { cpf, name } = req.body;
 
-  const customerAlreadyExists = customers.some(
-    (customer) => customer.cpf === cpf
-  );
+  const cpfAlreadyExists = customers.some((customer) => customer.cpf === cpf);
 
-  if (customerAlreadyExists) {
+  if (cpfAlreadyExists) {
     return res.status(400).json({ error: "Customer already exists" });
   }
 
