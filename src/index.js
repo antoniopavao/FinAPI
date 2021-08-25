@@ -1,3 +1,4 @@
+const { request } = require("express");
 const express = require("express");
 const { v4: uuidv4 } = require("uuid"); // Gerar id com numeros randomicos
 
@@ -6,13 +7,19 @@ app.use(express.json());
 
 const customers = [];
 
-/* 
-cpf - string 
-name - string
-id - uuid
-statement - []
+// Middleware
 
-*/
+function verifyIfExistsAccountCPF(req, res, next) {
+  const { cpf } = req.headers;
+
+  const customer = customers.find((customer) => customer.cpf == cpf);
+
+  if (!customer) return res.status(400).json({ error: "Customer not found" });
+
+  req.customer = customer;
+
+  return next();
+}
 
 app.post("/account", (req, res) => {
   const { cpf, name } = req.body;
@@ -35,13 +42,8 @@ app.post("/account", (req, res) => {
   return res.status(201).send("Created succesfully!");
 });
 
-app.get("/statement/", (req, res) => {
-  const { cpf } = req.headers;
-
-  const customer = customers.find((customer) => customer.cpf == cpf);
-
-  if (!customer) return res.status(400).json({ error: "Customer not found" });
-
+app.get("/statement/", verifyIfExistsAccountCPF, (req, res) => {
+  const { customer } = req;
   const customerStatement = customer.statement;
 
   return res.json(customerStatement); // default status code = 200
