@@ -1,6 +1,7 @@
 const { request } = require("express");
 const express = require("express");
 const { v4: uuidv4 } = require("uuid"); // Gerar id com numeros randomicos
+//const verifyIfExistsAccountCPF = require("./middlewares/verifyAccount");
 
 const app = express();
 app.use(express.json());
@@ -151,5 +152,7 @@ app.get("/balance", verifyIfExistsAccountCPF, (req, res) => {
   const balance = getBalance(customer.statement);
   return res.status(200).json(balance);
 });
+
+module.exports = customers;
 
 app.listen(3333);

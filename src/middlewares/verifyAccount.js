@@ -1,3 +1,6 @@
+const express = require("express");
+customers = require("../index");
+
 // Middleware
 function verifyIfExistsAccountCPF(req, res, next) {
   const { cpf } = req.headers;
