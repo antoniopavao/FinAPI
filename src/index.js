@@ -117,13 +117,30 @@ app.get("/statement/date", verifyIfExistsAccountCPF, (req, res) => {
 
   return res.json(statement); // default status code = 200
 });
-
+// Update account
 app.put("/account", verifyIfExistsAccountCPF, (req, res) => {
   const { name } = req.body;
   const { customer } = req;
 
   customer.name = name;
 
-  return response.status(201).send();
+  return res.status(200).send(customer);
 });
+
+// Get account information
+app.get("/account", verifyIfExistsAccountCPF, (req, res) => {
+  const { customer } = req;
+
+  return res.json(customer);
+});
+
+app.delete("/account", verifyIfExistsAccountCPF, (req, res) => {
+  const { customer } = req;
+
+  // splice
+  customers.splice(customer, 1);
+
+  return res.status(200).send(customers);
+});
+
 app.listen(3333);
