@@ -70,7 +70,7 @@ app.post("/deposit", verifyIfExistsAccountCPF, (req, res) => {
 
   const statementOperation = {
     description: description,
-    amount: "R$ " + amount,
+    amount: amount,
     created_at: new Date(),
     type: "credit",
   };
@@ -92,7 +92,7 @@ app.post("/withdraw", verifyIfExistsAccountCPF, (req, res) => {
   }
 
   const statementOperation = {
-    amount: "R$ " + amount,
+    amount: amount,
     created_at: new Date(),
     type: "debit",
   };
@@ -134,6 +134,7 @@ app.get("/account", verifyIfExistsAccountCPF, (req, res) => {
   return res.json(customer);
 });
 
+// Deleting account
 app.delete("/account", verifyIfExistsAccountCPF, (req, res) => {
   const { customer } = req;
 
@@ -141,6 +142,13 @@ app.delete("/account", verifyIfExistsAccountCPF, (req, res) => {
   customers.splice(customer, 1);
 
   return res.status(200).send(customers);
+});
+
+app.get("/balance", verifyIfExistsAccountCPF, (req, res) => {
+  const { customer } = req;
+
+  const balance = getBalance(customer.statement);
+  return res.status(200).json(balance);
 });
 
 app.listen(3333);
