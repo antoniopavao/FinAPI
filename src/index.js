@@ -8,7 +8,6 @@ app.use(express.json());
 const customers = [];
 
 // Middleware
-
 function verifyIfExistsAccountCPF(req, res, next) {
   const { cpf } = req.headers;
 
@@ -20,6 +19,8 @@ function verifyIfExistsAccountCPF(req, res, next) {
 
   return next();
 }
+
+// Creating account
 
 app.post("/account", (req, res) => {
   const { cpf, name } = req.body;
@@ -42,11 +43,31 @@ app.post("/account", (req, res) => {
   return res.status(201).send("Created succesfully!");
 });
 
+// Get statement
+
 app.get("/statement/", verifyIfExistsAccountCPF, (req, res) => {
   const { customer } = req;
   const customerStatement = customer.statement;
 
   return res.json(customerStatement); // default status code = 200
+});
+
+// Making deposit
+
+app.post("/deposit", verifyIfExistsAccountCPF, (req, res) => {
+  const { description, amount } = req.body;
+  const { customer } = req;
+
+  const statementOperation = {
+    description: description,
+    amount: "R$ " + amount,
+    created_at: new Date(),
+    type: "credit",
+  };
+
+  customer.statement.push(statementOperation);
+
+  return res.status(201).send("Deposit created!");
 });
 
 app.listen(3333);
